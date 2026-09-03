@@ -1,8 +1,8 @@
 """create jobs table
 
-Revision ID: cb27e94c7de8
+Revision ID: 67dcaa650037
 Revises: 
-Create Date: 2026-09-02 16:36:11.617676
+Create Date: 2026-09-02 20:37:31.534401
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cb27e94c7de8'
+revision = '67dcaa650037'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('status', sa.String(length=100), nullable=False),
     sa.Column('source', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.String(length=100), nullable=True),
+    sa.Column('description', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=False),
