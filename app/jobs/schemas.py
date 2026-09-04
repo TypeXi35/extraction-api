@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, validate
 
-class JobCreateScheam(Schema):
+class JobCreateSchema(Schema):
     name = fields.String(required=True)
     status = fields.String(required=True,
                            validate=validate.OneOf([
