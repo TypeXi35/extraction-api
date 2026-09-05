@@ -1,4 +1,17 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
+
+from app.jobs.service import JobService
+from app.jobs.schemas import JobResponseSchema
+from app.jobs.schemas import JobCreateSchema
+from app.jobs.schemas import JobReplaceSchema
+from app.jobs.schemas import JobUpdateSchema
+
+job_service = JobService()
+job_response_schema = JobResponseSchema()
+job_create_schema = JobCreateSchema()
+job_replace_schema = JobReplaceSchema()
+job_update_schema = JobUpdateSchema()
+multiple_jobs_response_schema = JobResponseSchema(many=True)
 
 jobs_bp = Blueprint(
     "jobs",
@@ -15,8 +28,8 @@ def list_jobs():
         Returns:
             JSON with list of jobs and status Code
     """
-    return {"message": "List jobs lives!"}, 200
-
+    job_list = job_service.get_all_jobs()
+    return jsonify(multiple_jobs_response_schema.dump(job_list)), 200
 
 @jobs_bp.post("/")
 def create_job():
@@ -27,18 +40,23 @@ def create_job():
         Returns:
             JSON with the new Job created and status code
     """
-    return {"message": "Create Jobs lives!"}, 201
+    job_data = job_create_schema.load(request.json)
+    job = job_service.create_job(job_data)
+    
+    return jsonify(job_response_schema.dump(job)), 201
 
 @jobs_bp.get("/<int:job_id>")
 def get_job_by_id(job_id):
     """
     Gets a job by its Id
         Parameters:
-            job_id
+            job_id: ID of the job to retrieve
         Returns:
-            JSON with the specified job
+            JSON with the requested job
     """
-    return {"message": "Get job by id lives!"}, 200
+    job = job_service.get_job(job_id)
+    
+    return jsonify(job_response_schema.dump(job)), 200
 
 @jobs_bp.put("/<int:job_id>")
 def replace_job(job_id):
@@ -49,7 +67,10 @@ def replace_job(job_id):
             replacement_job: the job to replace the old one
         
     """
-    return {"message": "Replace job Lives!"}, 200
+    job_data = job_replace_schema.load(request.json)
+    replaced_job = job_service.replace_job(job_id, job_data)
+    
+    return jsonify(job_response_schema.dump(replaced_job)), 200
 
 
 @jobs_bp.patch("/<int:job_id>")
@@ -62,7 +83,10 @@ def update_job(job_id):
         Returns:
             JSON with the updated job and HTTP status code
     """
-    return {"message": "Update job Lives!"}, 200
+    job_data = job_update_schema.load(request.json)
+    updated_job = job_service.update_job(job_id, job_data)
+    
+    return jsonify(job_response_schema.dump(updated_job)), 200
 
 @jobs_bp.delete("/<int:job_id>")
 def delete_job(job_id):
@@ -73,4 +97,5 @@ def delete_job(job_id):
         Returns:
             ID of erased element, and message confirming the delete
     """
-    return {"message": "Delete Job Lives!"}, 200
+    deleted_job = job_service.delete_job(job_id)
+    return jsonify(job_response_schema.dump(deleted_job)), 200
