@@ -5,7 +5,7 @@ from flask import Flask
 from app.jobs.routes import jobs_bp
 from .extensions import db, migrate
 from app.jobs.models import Job
-from app.errors import JobNotFoundError
+from app.errors import register_error_handlers
 
 def create_app():
     app = Flask(__name__)
@@ -18,8 +18,6 @@ def create_app():
 
     app.register_blueprint(jobs_bp)
     
-    @app.errorhandler(JobNotFoundError)
-    def handle_job_found(error):
-        return {"error": "Job not found"}, 404
+    register_error_handlers(app)
 
     return app
