@@ -2,6 +2,7 @@ from app.extensions import db
 from app.jobs.models import Job
 from sqlalchemy import select
 from datetime import datetime, timezone
+from sqlalchemy.exc import IntegrityError
 
 def get_current_time():
     return datetime.now(timezone.utc);
@@ -9,7 +10,11 @@ def get_current_time():
 class JobRepository:
     def create(self, job: Job):
         db.session.add(job)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            raise
         return job
     
     def get_by_id(self,job_id):

@@ -1,6 +1,7 @@
 from flask import jsonify
 from marshmallow import ValidationError
 from werkzeug.exceptions import UnsupportedMediaType, MethodNotAllowed
+from sqlalchemy.exc import IntegrityError
 
 class JobNotFoundError(Exception):
     pass
@@ -31,7 +32,14 @@ def register_error_handlers(app):
     
     @app.errorhandler(MethodNotAllowed)
     def handle_method_not_allowed(error):
-            return jsonify({
-                "error": "method_not_allowed",
-                "message" : "This HTTP method is not allowed for this resource."
-            }), 405
+        return jsonify({
+            "error": "method_not_allowed",
+            "message" : "This HTTP method is not allowed for this resource."
+        }), 405
+    
+    @app.errorhandler(IntegrityError)
+    def handle_integrity_error(error):
+        return jsonify({
+            "error": "integrity_error",
+            "message": "The request could not be completed because it violates a database constraint."
+        }), 400
