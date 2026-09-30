@@ -40,8 +40,8 @@ def create_job():
         Returns:
             JSON with the new Job created and status code
     """
-    job_data = job_create_schema.load(request.json)
-    job = job_service.create_job(job_data)
+    validated_job_data = job_create_schema.load(request.json)
+    job = job_service.create_job(validated_job_data)
     
     return jsonify(job_response_schema.dump(job)), 201
 
@@ -67,8 +67,8 @@ def replace_job(job_id):
             replacement_job: the job to replace the old one
         
     """
-    job_data = job_replace_schema.load(request.json)
-    replaced_job = job_service.replace_job(job_id, job_data)
+    validated_job_data = job_replace_schema.load(request.json)
+    replaced_job = job_service.replace_job(job_id, validated_job_data)
     
     return jsonify(job_response_schema.dump(replaced_job)), 200
 
@@ -79,12 +79,12 @@ def update_job(job_id):
     Updates the data of an existing job
         Parameters:
             job_id: the id of the job to be replaced
-            job_data: the data to be replaced field by field i think, might check
+            validated_job_data: the data to be replaced field by field i think, might check
         Returns:
             JSON with the updated job and HTTP status code
     """
-    job_data = job_update_schema.load(request.json)
-    updated_job = job_service.update_job(job_id, job_data)
+    validated_job_data = job_update_schema.load(request.json)
+    updated_job = job_service.update_job(job_id, validated_job_data)
     
     return jsonify(job_response_schema.dump(updated_job)), 200
 

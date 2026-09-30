@@ -16,8 +16,8 @@ class JobService:
     
     def create_job(self, job_data):
         job = Job(**job_data)
-        self.job_repository.create(job)
-        return job
+        return self.job_repository.create(job)
+        
 
     def get_all_jobs(self):
         return self.job_repository.get_all()
