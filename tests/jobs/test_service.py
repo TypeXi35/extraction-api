@@ -86,3 +86,18 @@ class TestJobService:
         
         mock_repository.return_value.delete.assert_called_once_with(1)
         assert result == expected_job
+
+    @pytest.mark.parametrize("service_method, repository_method, args", [
+        ("get_job", "get_by_id", (1,)),
+        ("replace_job", "update", (1, complete_job_data)),
+        ("update_job", "update", (1, complete_job_data)),
+        ("delete_job", "delete", (1,)),
+    ])
+    def test_job_not_found(self, mocker, service_method, repository_method, args):
+        mock_repository = mocker.patch("app.jobs.service.JobRepository")
+        getattr(mock_repository.return_value, repository_method).return_value = None
+
+        job_service = JobService()
+
+        with pytest.raises(JobNotFoundError):
+            getattr(job_service, service_method)(*args)

@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields, validate
 
+from app.jobs.models import JobStatus
+
 class JobCreateSchema(Schema):
     name = fields.String(required=True)
     status = fields.String(required=True,
@@ -14,7 +16,7 @@ class JobCreateSchema(Schema):
 class JobResponseSchema(Schema):
     id = fields.Integer()
     name = fields.String()
-    status = fields.String()
+    status = fields.Enum(JobStatus, by_value=True)
     source = fields.String()
     description = fields.String(allow_none=True)
     created_at = fields.DateTime()

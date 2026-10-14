@@ -7,10 +7,12 @@ from .extensions import db, migrate
 from app.jobs.models import Job
 from app.errors import register_error_handlers
 
-def create_app():
+def create_app(config=None):
     app = Flask(__name__)
     
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    if config:
+        app.config.update(config)
 
     
     db.init_app(app)

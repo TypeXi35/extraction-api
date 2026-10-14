@@ -7,6 +7,7 @@ from app.jobs.schemas import (
     JobReplaceSchema,
     JobUpdateSchema,
 )
+from app.jobs.models import JobStatus
 
 
 @pytest.fixture
@@ -156,7 +157,7 @@ class TestJobResponseSchema:
 
         assert result["id"] == 1
         assert result["name"] == "Test job"
-        assert result["status"] == "running"
+        assert result["status"] == JobStatus.RUNNING
         assert result["source"] == "test-source"
         assert result["description"] == "Test description"
 
